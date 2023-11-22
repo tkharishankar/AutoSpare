@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "508397395105",
+    "project_id": "autospare-39799",
+    "storage_bucket": "autospare-39799.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508397395105:android:939aaf3478f0ee2604e4e0",
+        "android_client_info": {
+          "package_name": "com.autospare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZiz_ybtKXt67oemsmLVPGsncHBlTAbug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
