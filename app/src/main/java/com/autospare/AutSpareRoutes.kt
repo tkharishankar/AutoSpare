@@ -6,3 +6,4 @@ package com.autospare
  */
 const val LOGIN_SCREEN = "LoginScreen"
 const val TASKS_SCREEN = "TasksScreen"
+const val ADD_TASK_SCREEN = "AddTaskScreen"

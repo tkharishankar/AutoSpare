@@ -2,5 +2,6 @@
     <string name="app_name">AutoSpare</string>
 
     <string name="generic_error">Something wrong happened. Please try again.</string>
+    <string name="email_error">Please insert a valid email.</string>
 
 </resources>

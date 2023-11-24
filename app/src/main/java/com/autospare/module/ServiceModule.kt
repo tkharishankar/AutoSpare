@@ -1,7 +1,11 @@
 package com.autospare.module
 
+import com.autospare.service.AccountService
+import com.autospare.service.AccountServiceImpl
 import com.autospare.service.LogService
 import com.autospare.service.LogServiceImpl
+import com.autospare.service.StorageService
+import com.autospare.service.StorageServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,5 +20,9 @@ import dagger.hilt.components.SingletonComponent
 abstract class ServiceModule {
     @Binds
     abstract fun provideLogService(impl: LogServiceImpl): LogService
+    @Binds
+    abstract fun provideStorageService(impl: StorageServiceImpl): StorageService
+    @Binds
+    abstract fun provideAccountService(impl: AccountServiceImpl): AccountService
 
 }

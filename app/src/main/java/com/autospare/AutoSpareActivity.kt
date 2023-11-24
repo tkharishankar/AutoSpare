@@ -28,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.autospare.common.SnackbarManager
+import com.autospare.ui.screens.AddTaskScreen
 import com.autospare.ui.screens.LoginScreen
 import com.autospare.ui.screens.TaskScreen
 import com.autospare.ui.theme.AutoSpareTheme
@@ -58,7 +59,7 @@ class AutoSpareActivity : ComponentActivity() {
 @ExperimentalMaterialApi
 fun AutoSpareDashboard() {
     AutoSpareTheme {
-        Surface(color =MaterialTheme.colorScheme.background) {
+        Surface(color = MaterialTheme.colorScheme.background) {
             val appState = rememberAppState()
             Scaffold(
                 snackbarHost = {
@@ -95,7 +96,15 @@ fun NavGraphBuilder.makeItSoGraph(appState: AutoSpareState) {
         LoginScreen(openAndPopUp = { route, popUp -> appState.navigateAndPopUp(route, popUp) })
     }
 
-    composable(TASKS_SCREEN) { TaskScreen(openScreen = { route -> appState.navigate(route) }) }
+    composable(TASKS_SCREEN) {
+        TaskScreen(openAndPopUp = { route, popUp ->
+            appState.navigateAndPopUp(
+                route,
+                popUp
+            )
+        })
+    }
+    composable(ADD_TASK_SCREEN) { AddTaskScreen(openScreen = { route -> appState.navigate(route) }) }
 }
 
 @Composable
