@@ -24,7 +24,7 @@ import com.autospare.common.google.rememberSignInState
 import com.autospare.viewmodel.LoginViewModel
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 @Composable

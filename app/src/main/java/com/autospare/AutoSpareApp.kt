@@ -4,7 +4,7 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 @HiltAndroidApp

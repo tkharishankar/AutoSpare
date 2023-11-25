@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 23/11/2023.
  */
 @Module

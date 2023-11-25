@@ -1,7 +1,7 @@
 package com.autospare.service
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 interface LogService {

@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 open class AutoSpareViewModel(private val logService: LogService) : ViewModel() {

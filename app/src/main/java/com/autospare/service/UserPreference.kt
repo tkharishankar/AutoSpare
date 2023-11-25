@@ -3,7 +3,7 @@ package com.autospare.service
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 23/11/2023.
  */
 interface UserPreference {

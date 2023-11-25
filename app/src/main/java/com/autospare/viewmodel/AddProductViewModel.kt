@@ -1,6 +1,7 @@
 package com.autospare.viewmodel
 
-import android.net.Uri
+import androidx.lifecycle.viewModelScope
+import com.autospare.PRODUCT_SCREEN
 import com.autospare.common.SnackbarManager
 import com.autospare.common.SnackbarMessage
 import com.autospare.data.Product
@@ -8,20 +9,25 @@ import com.autospare.service.LogService
 import com.autospare.service.StorageService
 import com.autospare.service.UserPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.io.File
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 @HiltViewModel
-class AddTaskViewModel @Inject constructor(
+class AddProductViewModel @Inject constructor(
     logService: LogService,
     private val storageService: StorageService,
     private val userPreference: UserPreference,
 ) : AutoSpareViewModel(logService) {
-    fun addNewProduct(productName: String, productPrice: String, productImagePath: String) {
+    fun addNewProduct(
+        productName: String,
+        productPrice: String,
+        productImagePath: String,
+        popUp: (String) -> Unit,
+    ) {
         if (productName.isEmpty()) {
             SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Product name should not be blank"))
             return
@@ -36,7 +42,8 @@ class AddTaskViewModel @Inject constructor(
             SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Please add product image!"))
             return
         }
-        launchCatching {
+        println(productImagePath)
+        viewModelScope.launch {
             storageService.save(
                 Product(
                     name = productName,
@@ -44,6 +51,10 @@ class AddTaskViewModel @Inject constructor(
                     imageUrl = productImagePath
                 )
             )
+            SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Product added successfully"))
+            launchCatching {
+                popUp(PRODUCT_SCREEN)
+            }
         }
     }
 

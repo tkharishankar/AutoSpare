@@ -51,22 +51,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import coil.compose.rememberAsyncImagePainter
-import com.autospare.viewmodel.AddTaskViewModel
+import com.autospare.viewmodel.AddProductViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import java.io.File
 import java.io.FileOutputStream
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 @ExperimentalMaterialApi
-fun AddTaskScreen(
-    openScreen: (String) -> Unit,
-    viewModel: AddTaskViewModel = hiltViewModel(),
+fun AddProductScreen(
+    popUp: (String) -> Unit,
+    viewModel: AddProductViewModel = hiltViewModel(),
 ) {
 
     val context = LocalContext.current
@@ -197,7 +197,8 @@ fun AddTaskScreen(
                             viewModel.addNewProduct(
                                 productName,
                                 productPrice,
-                                file.absolutePath
+                                file.absolutePath,
+                                popUp
                             )
                         }
                     }

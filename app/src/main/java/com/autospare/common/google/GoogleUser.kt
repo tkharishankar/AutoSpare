@@ -5,7 +5,7 @@ import com.auth0.android.jwt.DecodeException
 import com.auth0.android.jwt.JWT
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 23/11/2023.
  */
 data class GoogleUser(

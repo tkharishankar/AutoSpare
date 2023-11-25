@@ -4,7 +4,7 @@ import com.autospare.data.Product
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 23/11/2023.
  */
 interface StorageService {

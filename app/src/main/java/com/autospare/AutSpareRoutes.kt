@@ -1,9 +1,9 @@
 package com.autospare
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 const val LOGIN_SCREEN = "LoginScreen"
-const val TASKS_SCREEN = "TasksScreen"
-const val ADD_TASK_SCREEN = "AddTaskScreen"
+const val PRODUCT_SCREEN = "ProductScreen"
+const val ADD_PRODUCT_SCREEN = "AddProductScreen"

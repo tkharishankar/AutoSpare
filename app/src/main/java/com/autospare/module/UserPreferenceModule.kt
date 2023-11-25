@@ -8,7 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 23/11/2023.
  */
 @Module

@@ -1,7 +1,7 @@
 package com.autospare.common.google
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 23/11/2023.
  */
 object Claims {

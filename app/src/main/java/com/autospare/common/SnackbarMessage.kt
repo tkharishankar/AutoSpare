@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.autospare.R.string as AppText
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 

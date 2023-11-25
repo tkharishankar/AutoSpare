@@ -1,11 +1,9 @@
 package com.autospare.viewmodel
 
 import android.util.Log
-import android.util.Patterns
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.autospare.LOGIN_SCREEN
-import com.autospare.TASKS_SCREEN
+import com.autospare.PRODUCT_SCREEN
 import com.autospare.common.google.GoogleUser
 import com.autospare.service.LogService
 import com.autospare.service.UserPreference
@@ -15,7 +13,7 @@ import javax.inject.Inject
 
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 21/11/2023.
  */
 @HiltViewModel
@@ -33,7 +31,7 @@ class LoginViewModel @Inject constructor(
             }
         }
         launchCatching {
-            openAndPopUp(TASKS_SCREEN, LOGIN_SCREEN)
+            openAndPopUp(PRODUCT_SCREEN, LOGIN_SCREEN)
         }
     }
 }
