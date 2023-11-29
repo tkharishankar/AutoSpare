@@ -13,4 +13,5 @@ interface StorageService {
     suspend fun save(product: Product): String
     suspend fun update(product: Product)
     suspend fun delete(productId: String)
+    suspend fun createOrder(filter: List<Product>): String
 }

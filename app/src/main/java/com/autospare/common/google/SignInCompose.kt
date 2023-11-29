@@ -103,12 +103,10 @@ private fun signIn(
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
-                .setNonce(nonce)
                 .setServerClientId(clientId)
-                .setFilterByAuthorizedAccounts(rememberAccount)
+                .setFilterByAuthorizedAccounts(true)
                 .build()
         )
-        .setAutoSelectEnabled(true)
         .build()
 
     oneTapClient.beginSignIn(signInRequest)
@@ -120,11 +118,13 @@ private fun signIn(
                     ).build()
                 )
             } catch (e: Exception) {
+                e.printStackTrace()
                 onError(e.message.toString())
                 Log.e(TAG, "${e.message}")
             }
         }
         .addOnFailureListener {
+            it.printStackTrace()
             signUp(
                 activity = activity,
                 clientId = clientId,
@@ -148,9 +148,8 @@ private fun signUp(
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                 .setSupported(true)
-                .setNonce(nonce)
                 .setServerClientId(clientId)
-                .setFilterByAuthorizedAccounts(false)
+                .setFilterByAuthorizedAccounts(true)
                 .build()
         )
         .build()
@@ -164,11 +163,13 @@ private fun signUp(
                     ).build()
                 )
             } catch (e: Exception) {
+                e.printStackTrace()
                 onError(e.message.toString())
                 Log.e(TAG, "${e.message}")
             }
         }
         .addOnFailureListener {
+            it.printStackTrace()
             onError("Google Account not Found.")
             Log.e(TAG, "${it.message}")
         }

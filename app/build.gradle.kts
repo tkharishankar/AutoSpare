@@ -24,13 +24,39 @@ android {
         }
     }
 
+
+    signingConfigs {
+        getByName("debug") {
+            keyAlias = "key0"
+            keyPassword = "auto123"
+            storeFile = file("/Users/harik/Desktop/autospare.jks")
+            storePassword = "auto123"
+        }
+        create("release") {
+            keyAlias = "key0"
+            keyPassword = "auto123"
+            storeFile = file("/Users/harik/Desktop/autospare.jks")
+            storePassword = "auto123"
+        }
+    }
+
+
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -78,9 +104,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.auth0.android:jwtdecode:2.0.2")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("com.google.accompanist:accompanist-permissions:0.30.0")
-
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
