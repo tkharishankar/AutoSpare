@@ -1,10 +1,11 @@
 package com.autospare.service
 
-import com.autospare.common.google.GoogleUser
-import com.google.firebase.auth.FirebaseAuth
+import com.autospare.data.User
+import com.autospare.data.UserData
+import com.autospare.service.state.CreateUserState
+import com.autospare.service.state.GetUserState
+import com.autospare.service.state.LoginState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 /**
@@ -12,57 +13,43 @@ import javax.inject.Inject
  * Date: 23/11/2023.
  */
 
-class AccountServiceImpl @Inject constructor(private val auth: FirebaseAuth) : AccountService {
+class AccountServiceImpl @Inject constructor(
+    private val storageService: StorageService,
+    private val userPreference: UserPreference,
+) : AccountService {
+    override suspend fun authenticate(name: String, mail: String): LoginState {
+        println("authenticate")
+        return when (storageService.getUserDetail(mail)) {
+            is GetUserState.OnUser -> {
+                saveUserData(User(name = name, email = mail))
+                LoginState.Success
+            }
 
-    override val currentUserId: String
-        get() = auth.currentUser?.uid.orEmpty()
-
-    override val hasUser: Boolean
-        get() = auth.currentUser != null
-
-    override val currentUser: Flow<GoogleUser>
-        get() = callbackFlow {
-//            val listener =
-//                FirebaseAuth.AuthStateListener { auth ->
-//                    this.trySend(auth.currentUser?.let { GoogleUser(it.uid, it.isAnonymous) } ?: GoogleUser())
-//                }
-//            auth.addAuthStateListener(listener)
-//            awaitClose { auth.removeAuthStateListener(listener) }
+            GetUserState.UserNotFound -> {
+                saveUser(User(name = name, email = mail))
+            }
         }
-
-    override suspend fun authenticate(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
     }
 
-    override suspend fun sendRecoveryEmail(email: String) {
-        auth.sendPasswordResetEmail(email).await()
+    private suspend fun saveUserData(user: User) {
+        val state = storageService.checkUserIsAdmin(user.email)
+        userPreference.saveUserData(UserData(name = user.name, email = user.email, isAdmin = state))
     }
 
-    override suspend fun createAnonymousAccount() {
-        auth.signInAnonymously().await()
+    override fun getUserData(): Flow<UserData?> {
+        return userPreference.getUserData()
     }
 
-//    override suspend fun linkAccount(email: String, password: String): Unit =
-//        trace(LINK_ACCOUNT_TRACE) {
-//            val credential = EmailAuthProvider.getCredential(email, password)
-//            auth.currentUser!!.linkWithCredential(credential).await()
-//        }
+    private suspend fun saveUser(user: User): LoginState {
+        return when (val state = storageService.saveUser(user)) {
+            is CreateUserState.CreateError -> {
+                LoginState.Failure(state.message)
+            }
 
-    override suspend fun deleteAccount() {
-        auth.currentUser!!.delete().await()
-    }
-
-    override suspend fun signOut() {
-        if (auth.currentUser!!.isAnonymous) {
-            auth.currentUser!!.delete()
+            CreateUserState.Created -> {
+                saveUserData(user)
+                LoginState.Success
+            }
         }
-        auth.signOut()
-
-        // Sign the user back in anonymously.
-        createAnonymousAccount()
-    }
-
-    companion object {
-        private const val LINK_ACCOUNT_TRACE = "linkAccount"
     }
 }

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +29,14 @@ object DataStoreModule {
             corruptionHandler = ReplaceFileCorruptionHandler(
                 produceNewData = { emptyPreferences() }
             ),
-            produceFile = { context.preferencesDataStoreFile("user_data") }
+            produceFile = { context.preferencesDataStoreFile("autospare") }
         )
     }
+
+    @Provides
+    @Singleton
+    fun providePreferences(dataStore: DataStore<Preferences>): com.autospare.module.Preferences {
+        return Preferences(dataStore)
+    }
+
 }

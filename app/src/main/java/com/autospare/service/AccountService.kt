@@ -1,6 +1,7 @@
 package com.autospare.service
 
-import com.autospare.common.google.GoogleUser
+import com.autospare.data.UserData
+import com.autospare.service.state.LoginState
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -8,15 +9,6 @@ import kotlinx.coroutines.flow.Flow
  * Date: 23/11/2023.
  */
 interface AccountService {
-    val currentUserId: String
-    val hasUser: Boolean
-
-    val currentUser: Flow<GoogleUser>
-
-    suspend fun authenticate(email: String, password: String)
-    suspend fun sendRecoveryEmail(email: String)
-    suspend fun createAnonymousAccount()
-//    suspend fun linkAccount(email: String, password: String)
-    suspend fun deleteAccount()
-    suspend fun signOut()
+    suspend fun authenticate(name: String, mailId: String): LoginState
+    fun getUserData(): Flow<UserData?>
 }

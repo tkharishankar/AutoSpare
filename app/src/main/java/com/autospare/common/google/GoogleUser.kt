@@ -9,16 +9,16 @@ import com.auth0.android.jwt.JWT
  * Date: 23/11/2023.
  */
 data class GoogleUser(
-    val sub: String?,
-    val email: String?,
-    val emailVerified: Boolean?,
-    val fullName: String?,
-    val givenName: String?,
-    val familyName: String?,
-    val picture: String?,
-    val issuedAt: Long?,
-    val expirationTime: Long?,
-    val locale: String?,
+    val sub: String? = "",
+    val email: String? = "",
+    val emailVerified: Boolean? = false,
+    val fullName: String? = "",
+    val givenName: String? = "",
+    val familyName: String? = "",
+    val picture: String? = "",
+    val issuedAt: Long? = 0L,
+    val expirationTime: Long? = 0L,
+    val locale: String? = "",
     val isAnonymous: Boolean = false,
 )
 

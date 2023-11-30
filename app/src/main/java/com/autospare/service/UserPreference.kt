@@ -1,5 +1,6 @@
 package com.autospare.service
 
+import com.autospare.data.UserData
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -8,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
  */
 interface UserPreference {
 
-    fun userName(): Flow<String>
+    fun getUserData(): Flow<UserData?>
 
-    suspend fun saveUserName(name: String)
+
+    suspend fun saveUserData(user: UserData)
 }

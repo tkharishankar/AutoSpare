@@ -1,10 +1,13 @@
 package com.autospare.data
 
+import kotlinx.serialization.Serializable
+
 
 /**
  * Author: Senthil
  * Date: 23/11/2023.
  */
+@Serializable
 data class Product(
     val productId: String = "",
     val name: String = "",
@@ -12,7 +15,4 @@ data class Product(
     val imageUrl: String = "",
     val createdTimestamp: Long = 0L,
     val isSelected: Boolean = false,
-) {
-    // Add a no-argument constructor
-    constructor() : this("", "", "", "", 0L, false)
-}
+)

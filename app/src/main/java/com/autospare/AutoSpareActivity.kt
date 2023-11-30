@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.autospare.common.SnackbarManager
 import com.autospare.ui.screens.AddProductScreen
 import com.autospare.ui.screens.LoginScreen
+import com.autospare.ui.screens.OrderScreen
 import com.autospare.ui.screens.ProductScreen
 import com.autospare.ui.theme.AutoSpareTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -97,14 +98,12 @@ fun NavGraphBuilder.makeItSoGraph(appState: AutoSpareState) {
     }
 
     composable(PRODUCT_SCREEN) {
-        ProductScreen(openAndPopUp = { route, popUp ->
-            appState.navigateAndPopUp(
-                route,
-                popUp
-            )
-        })
+        ProductScreen(popUp = { route -> appState.navigate(route) })
     }
-    composable(ADD_PRODUCT_SCREEN) { AddProductScreen(popUp = { route -> appState.clearAndNavigate(route) }) }
+    composable(ADD_PRODUCT_SCREEN) { AddProductScreen(popUp = { route -> appState.navigate(route) }) }
+
+    composable(ORDER_SCREEN) { OrderScreen(popUp = { route -> appState.navigate(route) }) }
+
 }
 
 @Composable

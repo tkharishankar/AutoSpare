@@ -2,23 +2,17 @@ package com.autospare.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.autospare.ADD_PRODUCT_SCREEN
-import com.autospare.PRODUCT_SCREEN
 import com.autospare.common.SnackbarManager
 import com.autospare.common.SnackbarMessage
 import com.autospare.data.Product
+import com.autospare.service.AccountService
 import com.autospare.service.LogService
 import com.autospare.service.StorageService
-import com.autospare.service.UserPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,12 +23,12 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductViewModel @Inject constructor(
     logService: LogService,
-    private val userPreference: UserPreference,
+    accountService: AccountService,
     private val storageService: StorageService,
-) : AutoSpareViewModel(logService) {
-    fun openAddProduct(openAndPopUp: (String, String) -> Unit) {
+) : AutoSpareViewModel(logService, accountService) {
+    fun openAddProduct(popUp: (String) -> Unit) {
         launchCatching {
-            openAndPopUp(ADD_PRODUCT_SCREEN, PRODUCT_SCREEN)
+            popUp(ADD_PRODUCT_SCREEN)
         }
     }
 
@@ -60,7 +54,12 @@ class ProductViewModel @Inject constructor(
 
     fun createOrder() {
         viewModelScope.launch {
-            storageService.createOrder(products.value.filter { it.isSelected })
+            user.value?.let { userData ->
+                storageService.createOrder(
+                    userData.email,
+                    userData.name,
+                    products.value.filter { it.isSelected })
+            }
             SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Order created successfully"))
             val updatedProducts = products.value.map { product ->
                 if (product.isSelected) {
@@ -72,13 +71,4 @@ class ProductViewModel @Inject constructor(
             _products.value = updatedProducts
         }
     }
-
-    val userId: StateFlow<String?> = userPreference.userName().filter {
-        it.isNotEmpty()
-    }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            null
-        )
 }

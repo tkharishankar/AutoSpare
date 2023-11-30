@@ -7,3 +7,4 @@ package com.autospare
 const val LOGIN_SCREEN = "LoginScreen"
 const val PRODUCT_SCREEN = "ProductScreen"
 const val ADD_PRODUCT_SCREEN = "AddProductScreen"
+const val ORDER_SCREEN = "OrderScreen"

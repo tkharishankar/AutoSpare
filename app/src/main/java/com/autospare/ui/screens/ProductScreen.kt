@@ -1,6 +1,5 @@
 package com.autospare.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,44 +18,54 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.autospare.ORDER_SCREEN
 import com.autospare.data.Product
+import com.autospare.data.UserData
 import com.autospare.ui.theme.Green40
 import com.autospare.viewmodel.ProductViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * Author: Senthil
@@ -66,44 +75,128 @@ import com.autospare.viewmodel.ProductViewModel
 @Composable
 @ExperimentalMaterialApi
 fun ProductScreen(
-    openAndPopUp: (String, String) -> Unit,
+    popUp: (String) -> Unit,
     viewModel: ProductViewModel = hiltViewModel(),
 ) {
-    val userId: String? by viewModel.userId.collectAsStateWithLifecycle()
+    val user by viewModel.user.collectAsState()
 
     val productsState by viewModel.products.collectAsState()
 
-    LaunchedEffect(key1 = null, block = {
-        viewModel.getProducts()
-        userId?.let { userId ->
-            Log.i("Tag", "username: $userId")
-        } ?: run {
-            Log.i("Tag", "No saved data")
-            // Handle the case where userIdState is null ("No saved data")
-        }
-    })
+    LaunchedEffect(
+        key1 = null, block = {
+            viewModel.getUser()
+            viewModel.getProducts()
+        })
 
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+            ) {
+                Column(
+                    modifier = Modifier
+                        .height(100.dp)
+                        .background(
+                            MaterialTheme.colorScheme.primary
+                        )
+                ) {
+
+                }
+                NavigationDrawerItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingBag,
+                            tint = Color.Black,
+                            contentDescription = "Localized description"
+                        )
+                    },
+                    label = { Text(text = "Orders", textAlign = TextAlign.Center) },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.apply {
+                                close()
+                            }
+                        }
+                        popUp(ORDER_SCREEN)
+                    }
+                )
+                NavigationDrawerItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            tint = Color.Black,
+                            contentDescription = "Localized description"
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = "Logout",
+                            textAlign = TextAlign.Center,
+                            color = Color.Black
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+
+                    }
+                )
+            }
+        },
+    ) {
+        ProductListView(scope, drawerState, user, viewModel, popUp, productsState)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ProductListView(
+    scope: CoroutineScope,
+    drawerState: DrawerState,
+    user: UserData?,
+    viewModel: ProductViewModel,
+    popUp: (String) -> Unit,
+    productsState: List<Product>,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
                 ),
                 title = {
                     Text("Product List")
                 },
-                actions = {
-//                    if (userId == "tkharishankar@gmail.com") {
+                navigationIcon = {
                     IconButton(onClick = {
-                        viewModel.openAddProduct(openAndPopUp)
+                        scope.launch {
+                            drawerState.apply {
+                                if (isClosed) open() else close()
+                            }
+                        }
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.Add,
+                            imageVector = Icons.Filled.Menu,
+                            tint = Color.White,
                             contentDescription = "Localized description"
                         )
                     }
-//                    }
+                },
+                actions = {
+                    if (user?.isAdmin == true) {
+                        IconButton(onClick = {
+                            viewModel.openAddProduct(popUp)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                tint = Color.White,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
                 },
             )
         },
@@ -122,7 +215,7 @@ fun ProductScreen(
                     text = { Text(text = "Place the order", fontWeight = FontWeight.Bold) },
                 )
             }
-        }
+        },
     ) {
         Column(
             modifier = Modifier
@@ -139,7 +232,6 @@ fun ProductScreen(
             }
         }
     }
-
 }
 
 @Composable

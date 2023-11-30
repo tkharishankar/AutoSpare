@@ -10,6 +10,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,8 +35,13 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state = rememberSignInState()
-
+    val userData by viewModel.user.collectAsState()
     var user: GoogleUser? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(
+        key1 = null, block = {
+            viewModel.getUser()
+        })
 
     SignInWithGoogle(
         state = state,
@@ -61,11 +68,21 @@ fun LoginScreen(
                 modifier = Modifier.weight(2f),
                 contentAlignment = Alignment.Center
             ) {
-                Button(
-                    onClick = { state.open() },
-                    enabled = !state.opened
-                ) {
-                    Text(text = "Google Sign in")
+                if (userData != null) {
+                    viewModel.onSignInClick(
+                        GoogleUser(
+                            fullName = userData?.name,
+                            email = userData?.email
+                        ),
+                        openAndPopUp
+                    )
+                } else {
+                    Button(
+                        onClick = { state.open() },
+                        enabled = !state.opened
+                    ) {
+                        Text(text = "Google Sign in")
+                    }
                 }
             }
         }
