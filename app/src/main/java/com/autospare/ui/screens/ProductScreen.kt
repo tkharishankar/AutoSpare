@@ -290,7 +290,7 @@ fun ProviderItem(product: Product, onProductSelect: () -> Unit) {
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = product.price + " INR",
+                        text = product.price + " $",
                         style = MaterialTheme.typography.labelMedium,
                         color = Color.White,
                         textAlign = TextAlign.Center

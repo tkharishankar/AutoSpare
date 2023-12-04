@@ -155,7 +155,7 @@ fun OrderCard(order: Order, onOrderDetailClick: () -> Unit) {
                             color = Color.DarkGray
                         )
                         Text(
-                            text = "Amount: INR 100",
+                            text = "Amount: 100 $",
                             fontWeight = FontWeight.Bold,
                             color = Color.DarkGray
                         )

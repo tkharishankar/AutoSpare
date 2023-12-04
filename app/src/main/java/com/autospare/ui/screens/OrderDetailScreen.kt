@@ -104,7 +104,7 @@ fun OrderDetailScreen(
                         modifier = Modifier
                             .padding(8.dp),
                         text = "Total Amount : " + products.sumOf { it.price.toInt() }
-                            .toString() + " INR",
+                            .toString() + " $",
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                         maxLines = 3,
@@ -197,7 +197,7 @@ fun ProviderItem(product: Product) {
                     Text(
                         modifier = Modifier
                             .padding(8.dp),
-                        text = product.price + " INR",
+                        text = product.price + " $",
                         style = MaterialTheme.typography.labelMedium,
                         color = Color.White,
                         textAlign = TextAlign.End
