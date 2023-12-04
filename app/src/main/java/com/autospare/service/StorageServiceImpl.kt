@@ -1,5 +1,6 @@
 package com.autospare.service
 
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.core.os.trace
 import com.autospare.data.Order
@@ -10,12 +11,14 @@ import com.autospare.service.state.CreateUserState
 import com.autospare.service.state.GetUserState
 import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -90,9 +93,69 @@ class StorageServiceImpl @Inject constructor(
         return firestore.collection(ORDER_COLLECTION).dataObjects()
     }
 
+    override suspend fun getOrder(orderId: String): Flow<Order?> = flow {
+        try {
+            val querySnapshot = firestore.collection(ORDER_COLLECTION)
+                .whereEqualTo("orderId", orderId.trim())
+                .get()
+                .await()
+
+            val order = querySnapshot?.toObjects<Order>()?.firstOrNull()
+            emit(order)
+        } catch (e: Exception) {
+            // Handle exceptions here
+            emit(null)
+            Log.e("Tag", "Error getting order: ${e.message}", e)
+        }
+    }
+
+    override suspend fun productByIds(productIds: List<String>): Flow<List<Product>> = flow {
+        val querySnapshot = firestore.collection(PRODUCT_COLLECTION)
+            .whereIn("productId", productIds)
+            .get()
+            .await()
+        val products = querySnapshot?.toObjects<Product>()
+        if (products != null) {
+            emit(products)
+        } else {
+            emit(emptyList())
+        }
+    }
+
+    override suspend fun setOrderStatus(orderId: String?, status: Status): Flow<Order?> = flow {
+        try {
+            if (orderId == null) {
+                emit(null)
+            }
+            val querySnapshot = firestore.collection(ORDER_COLLECTION)
+                .whereEqualTo("orderId", orderId)
+                .limit(1)
+                .get()
+                .await()
+            val orderList = querySnapshot?.toObjects<Order>()
+            var order = orderList?.first()
+            order = order?.copy(status = Status.DELIVERED)
+            if (order != null) {
+                val orderRef =
+                    firestore.collection(ORDER_COLLECTION).whereEqualTo("orderId", orderId)
+                orderRef.get().addOnSuccessListener {
+                    if (!it.isEmpty) {
+                        firestore.collection(ORDER_COLLECTION).document(it.documents[0].id).set(
+                            order, SetOptions.merge()
+                        )
+                    }
+                }
+                emit(order)
+            }
+
+        } catch (e: Exception) {
+            emit(null)
+            Log.e("Tag", "Error updating order status: ${e.message}", e)
+        }
+    }
+
     override suspend fun getUserDetail(mail: String): GetUserState {
         return try {
-            println("getUserDetail")
             val querySnapshot = firestore.collection(USER_COLLECTION)
                 .whereEqualTo("email", mail)
                 .get().await()
@@ -103,18 +166,15 @@ class StorageServiceImpl @Inject constructor(
                 GetUserState.OnUser(result)
             }
         } catch (e: Exception) {
-            println("Failed to get user: ${e.message}")
             GetUserState.UserNotFound
         }
     }
 
     override suspend fun saveUser(user: User): CreateUserState {
-        println("saveUser")
         return try {
             firestore.collection(USER_COLLECTION).add(user).await()
             CreateUserState.Created
         } catch (e: Exception) {
-            println("Failed to save user: ${e.message}")
             CreateUserState.CreateError("Failed to save user: ${e.message}")
         }
     }

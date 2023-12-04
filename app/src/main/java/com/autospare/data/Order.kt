@@ -13,7 +13,7 @@ data class Order(
     val orderId: String = "",
     val products: List<String> = emptyList(),
     val createdTimestamp: Long = 0L,
-    val status: Status = Status.NONE,
+    var status: Status = Status.NONE,
 )
 
 

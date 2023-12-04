@@ -18,7 +18,10 @@ import kotlinx.coroutines.launch
  * Author: Senthil
  * Date: 21/11/2023.
  */
-open class AutoSpareViewModel(private val logService: LogService, private val accountService: AccountService) : ViewModel() {
+open class AutoSpareViewModel(
+    private val logService: LogService,
+    private val accountService: AccountService,
+) : ViewModel() {
     fun launchCatching(snackbar: Boolean = true, block: suspend CoroutineScope.() -> Unit) =
         viewModelScope.launch(
             CoroutineExceptionHandler { _, throwable ->
@@ -29,14 +32,4 @@ open class AutoSpareViewModel(private val logService: LogService, private val ac
             },
             block = block
         )
-
-    private val _user = MutableStateFlow<UserData?>(null)
-    val user: StateFlow<UserData?> = _user.asStateFlow()
-    fun getUser() {
-        viewModelScope.launch {
-            accountService.getUserData().collect {
-                _user.value = it
-            }
-        }
-    }
 }

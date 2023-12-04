@@ -9,6 +9,9 @@ import com.autospare.service.AccountService
 import com.autospare.service.LogService
 import com.autospare.service.StorageService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import java.time.LocalTime
@@ -45,6 +48,7 @@ class AddProductViewModel @Inject constructor(
             return
         }
         println(productImagePath)
+        _isLoading.value = true
         viewModelScope.launch {
             storageService.save(
                 Product(
@@ -52,14 +56,19 @@ class AddProductViewModel @Inject constructor(
                     name = productName,
                     price = productPrice,
                     imageUrl = productImagePath,
-                    createdTimestamp = LocalTime.now().toNanoOfDay()
+                    createdTimestamp = Clock.System.now().epochSeconds
                 )
             )
+            _isLoading.value = false
             SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Product added successfully"))
             launchCatching {
                 popUp(PRODUCT_SCREEN)
             }
         }
     }
+
+    val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
 
 }

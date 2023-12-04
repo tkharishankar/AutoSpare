@@ -1,6 +1,7 @@
 package com.autospare.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.autospare.ORDER_DETAIL_SCREEN
+import com.autospare.ORDER_ID
 import com.autospare.PRODUCT_SCREEN
 import com.autospare.data.Order
 import com.autospare.viewmodel.OrderViewModel
@@ -51,7 +54,7 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 @ExperimentalMaterialApi
 fun OrderScreen(
-    popUp: (String) -> Unit,
+    openScreen: (String) -> Unit,
     viewModel: OrderViewModel = hiltViewModel(),
 ) {
     val user by viewModel.user.collectAsState()
@@ -78,7 +81,7 @@ fun OrderScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        popUp(PRODUCT_SCREEN)
+                        openScreen(PRODUCT_SCREEN)
                     }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
@@ -98,7 +101,9 @@ fun OrderScreen(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(orders.size) { i ->
-                    OrderCard(orders[i])
+                    OrderCard(orders[i]) {
+                        openScreen("$ORDER_DETAIL_SCREEN?$ORDER_ID=${orders[i].orderId}")
+                    }
                 }
             }
         }
@@ -106,12 +111,15 @@ fun OrderScreen(
 }
 
 @Composable
-fun OrderCard(order: Order) {
+fun OrderCard(order: Order, onOrderDetailClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
-        elevation = CardDefaults.outlinedCardElevation()
+            .padding(8.dp)
+            .clickable {
+                onOrderDetailClick()
+            },
+        elevation = CardDefaults.outlinedCardElevation(),
     ) {
         Column(
             modifier = Modifier.padding(8.dp)

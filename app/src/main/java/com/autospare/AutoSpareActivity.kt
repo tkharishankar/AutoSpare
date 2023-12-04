@@ -27,9 +27,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.autospare.common.SnackbarManager
 import com.autospare.ui.screens.AddProductScreen
 import com.autospare.ui.screens.LoginScreen
+import com.autospare.ui.screens.OrderDetailScreen
 import com.autospare.ui.screens.OrderScreen
 import com.autospare.ui.screens.ProductScreen
 import com.autospare.ui.theme.AutoSpareTheme
@@ -98,12 +100,24 @@ fun NavGraphBuilder.makeItSoGraph(appState: AutoSpareState) {
     }
 
     composable(PRODUCT_SCREEN) {
-        ProductScreen(popUp = { route -> appState.navigate(route) })
+        ProductScreen(popUp = { route -> appState.navigate(route) },
+            openAndPopUp = { route -> appState.clearAndNavigate(route) })
     }
     composable(ADD_PRODUCT_SCREEN) { AddProductScreen(popUp = { route -> appState.navigate(route) }) }
 
-    composable(ORDER_SCREEN) { OrderScreen(popUp = { route -> appState.navigate(route) }) }
+    composable(ORDER_SCREEN) { OrderScreen(openScreen = { route -> appState.navigate(route) }) }
 
+    composable(
+        route = "$ORDER_DETAIL_SCREEN$ORDER_ID_ARG",
+        arguments = listOf(navArgument(ORDER_ID) {
+            nullable = true
+            defaultValue = null
+        })
+    ) {
+        OrderDetailScreen(
+            popUp = { appState.popUp() }
+        )
+    }
 }
 
 @Composable

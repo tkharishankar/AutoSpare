@@ -40,6 +40,11 @@ class AccountServiceImpl @Inject constructor(
         return userPreference.getUserData()
     }
 
+    override suspend fun logout(): Boolean {
+        userPreference.saveUserData(UserData(name = "", email = ""))
+        return true
+    }
+
     private suspend fun saveUser(user: User): LoginState {
         return when (val state = storageService.saveUser(user)) {
             is CreateUserState.CreateError -> {

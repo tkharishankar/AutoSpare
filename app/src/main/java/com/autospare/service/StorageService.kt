@@ -2,6 +2,7 @@ package com.autospare.service
 
 import com.autospare.data.Order
 import com.autospare.data.Product
+import com.autospare.data.Status
 import com.autospare.data.User
 import com.autospare.service.state.CreateUserState
 import com.autospare.service.state.GetUserState
@@ -23,4 +24,7 @@ interface StorageService {
     suspend fun checkUserIsAdmin(email: String): Boolean
     fun ordersByUser(email: String?):  Flow<List<Order>>
     fun orders():  Flow<List<Order>>
+    suspend fun getOrder(orderId: String): Flow<Order?>
+    suspend fun productByIds(productIds: List<String>):  Flow<List<Product>>
+    suspend fun setOrderStatus(orderId: String?, status: Status): Flow<Order?>
 }

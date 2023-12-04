@@ -11,4 +11,5 @@ import kotlinx.coroutines.flow.Flow
 interface AccountService {
     suspend fun authenticate(name: String, mailId: String): LoginState
     fun getUserData(): Flow<UserData?>
+    abstract suspend fun logout(): Boolean
 }

@@ -76,6 +76,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 fun ProductScreen(
     popUp: (String) -> Unit,
+    openAndPopUp: (String) -> Unit,
     viewModel: ProductViewModel = hiltViewModel(),
 ) {
     val user by viewModel.user.collectAsState()
@@ -140,7 +141,7 @@ fun ProductScreen(
                     },
                     selected = false,
                     onClick = {
-
+                        viewModel.logout(openAndPopUp)
                     }
                 )
             }

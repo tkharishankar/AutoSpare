@@ -26,6 +26,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +38,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,6 +78,8 @@ fun AddProductScreen(
 ) {
 
     val context = LocalContext.current
+
+    val isLoading by viewModel.isLoading.collectAsState()
 
     var productName by remember { mutableStateOf("") }
     var productPrice by remember { mutableStateOf("") }
@@ -202,25 +206,32 @@ fun AddProductScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    var productImagePath: Uri? = null
-                    if (selectImages.isNotEmpty()) {
-                        productImagePath = selectImages.first()
-                    }
-                    if (productImagePath != null) {
-                        val file = convertUriToFile(context, productImagePath)
-                        if (file != null) {
-                            viewModel.addNewProduct(
-                                productName,
-                                productPrice,
-                                file.absolutePath,
-                                popUp
-                            )
+            if (!isLoading) {
+                Button(
+                    onClick = {
+                        var productImagePath: Uri? = null
+                        if (selectImages.isNotEmpty()) {
+                            productImagePath = selectImages.first()
                         }
-                    }
-                }) {
-                Text(text = "Add Product")
+                        if (productImagePath != null) {
+                            val file = convertUriToFile(context, productImagePath)
+                            if (file != null) {
+                                viewModel.addNewProduct(
+                                    productName,
+                                    productPrice,
+                                    file.absolutePath,
+                                    popUp
+                                )
+                            }
+                        }
+                    }) {
+                    Text(text = "Add Product")
+                }
+            } else {
+                CircularProgressIndicator(
+                    color = Color.Blue,
+                    strokeWidth = 4.dp
+                )
             }
         }
     }
