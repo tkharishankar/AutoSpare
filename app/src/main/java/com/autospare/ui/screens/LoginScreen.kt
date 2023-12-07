@@ -49,7 +49,6 @@ fun LoginScreen(
 ) {
     val state = rememberSignInState()
     val userData by viewModel.user.collectAsState()
-    var user: GoogleUser? by remember { mutableStateOf(null) }
     val isLoading by viewModel.isLoading.collectAsState()
 
     val context = LocalContext.current
@@ -58,6 +57,7 @@ fun LoginScreen(
         .build()
     val gsc = GoogleSignIn.getClient(context, gso)
     val signInIntent = remember { gsc.signInIntent }
+
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -68,19 +68,6 @@ fun LoginScreen(
         key1 = null, block = {
             viewModel.getUser()
         })
-
-//    SignInWithGoogle(
-//        state = state,
-//        clientId = "508397395105-lu2o6ddkvehkprcifcd9pcd21i0bgr4i.apps.googleusercontent.com",
-//        onTokenIdReceived = {
-//            user = getUserFromTokenId(tokenId = it)
-//            Log.d("MainActivity", user.toString())
-//            viewModel.onSignInClick(user, openAndPopUp)
-//        },
-//        onDialogDismissed = {
-//            Log.d("MainActivity", it)
-//        }
-//    )
 
     Scaffold {
         Column(
@@ -127,20 +114,18 @@ private fun onSignInResult(
     viewModel: LoginViewModel,
     openAndPopUp: (String, String) -> Unit,
 ) {
-    val account = result.result
-    if (result.isSuccessful && account != null) {
-        Log.i("account", "account ${account.email} , ${account.displayName}")
-        viewModel.onSignInClick(
-            User(
-                name = account.displayName.toString(),
-                email = account.email.toString()
-            ), openAndPopUp
-        )
-    } else {
+    try {
+        val account = result.result
+        if (result.isSuccessful && account != null) {
+            Log.i("account", "account ${account.email} , ${account.displayName}")
+            viewModel.onSignInClick(
+                User(
+                    name = account.displayName.toString(),
+                    email = account.email.toString()
+                ), openAndPopUp
+            )
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
-}
-
-
-private fun showToast(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

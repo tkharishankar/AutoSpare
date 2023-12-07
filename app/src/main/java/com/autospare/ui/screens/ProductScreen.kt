@@ -64,6 +64,8 @@ import com.autospare.data.Product
 import com.autospare.data.UserData
 import com.autospare.ui.theme.Green40
 import com.autospare.viewmodel.ProductViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -91,6 +93,14 @@ fun ProductScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .build()
+    val gsc = GoogleSignIn.getClient(context, gso)
+
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -141,7 +151,9 @@ fun ProductScreen(
                     },
                     selected = false,
                     onClick = {
+                        gsc.revokeAccess()
                         viewModel.logout(openAndPopUp)
+
                     }
                 )
             }
@@ -202,7 +214,7 @@ private fun ProductListView(
             )
         },
         floatingActionButton = {
-            if (productsState.find { it.isSelected } != null) {
+            if (productsState.find { it.isSelected } != null && user?.isAdmin == false) {
                 ExtendedFloatingActionButton(
                     onClick = {
                         viewModel.createOrder()
@@ -226,7 +238,7 @@ private fun ProductListView(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(productsState.size) { i ->
-                    ProviderItem(productsState[i]) {
+                    ProviderItem(user, productsState[i]) {
                         viewModel.toggleProductSelection(productsState[i])
                     }
                 }
@@ -236,7 +248,10 @@ private fun ProductListView(
 }
 
 @Composable
-fun ProviderItem(product: Product, onProductSelect: () -> Unit) {
+fun ProviderItem(
+    user: UserData?,
+    product: Product, onProductSelect: () -> Unit,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -298,31 +313,32 @@ fun ProviderItem(product: Product, onProductSelect: () -> Unit) {
                 }
             }
 
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(
-                            if (product.isSelected) {
-                                Green40
-                            } else {
-                                Color.LightGray
-                            }, shape = CircleShape
-                        )
+            if (user?.isAdmin == false) {
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "selected",
-                        tint = Color.White,
+                    Box(
                         modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.Center)
-                    )
+                            .size(24.dp)
+                            .background(
+                                if (product.isSelected) {
+                                    Green40
+                                } else {
+                                    Color.LightGray
+                                }, shape = CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "selected",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .align(Alignment.Center)
+                        )
+                    }
                 }
-
             }
         }
     }
