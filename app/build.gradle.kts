@@ -30,13 +30,13 @@ android {
         getByName("debug") {
             keyAlias = "key0"
             keyPassword = "auto123"
-            storeFile = file("/Users/harik/Desktop/autospare.jks")
+            storeFile = file("../app/autospare.jks")
             storePassword = "auto123"
         }
         create("release") {
             keyAlias = "key0"
             keyPassword = "auto123"
-            storeFile = file("/Users/harik/Desktop/autospare.jks")
+            storeFile = file("../app/autospare.jks")
             storePassword = "auto123"
         }
     }

@@ -121,7 +121,7 @@ fun AddProductScreen(
                     titleContentColor = Color.White,
                 ),
                 title = {
-                    Text("Add New Task")
+                    Text("Add New Product")
                 },
                 navigationIcon = {
                     IconButton(onClick = {

@@ -10,7 +10,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 30/11/2023.
  */
 class Preferences(val dataStore: DataStore<Preferences>) {

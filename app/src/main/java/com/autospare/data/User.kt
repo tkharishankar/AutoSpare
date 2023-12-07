@@ -3,7 +3,7 @@ package com.autospare.data
 import kotlinx.serialization.Serializable
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 30/11/2023.
  */
 @Serializable

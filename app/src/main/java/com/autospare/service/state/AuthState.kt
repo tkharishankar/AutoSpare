@@ -3,7 +3,7 @@ package com.autospare.service.state
 import com.autospare.data.User
 
 /**
- * Author: Hari K
+ * Author: Senthil
  * Date: 30/11/2023.
  */
 sealed class GetUserState {
