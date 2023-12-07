@@ -7,6 +7,7 @@ import com.autospare.PRODUCT_SCREEN
 import com.autospare.common.SnackbarManager
 import com.autospare.common.SnackbarMessage
 import com.autospare.common.google.GoogleUser
+import com.autospare.data.User
 import com.autospare.data.UserData
 import com.autospare.service.AccountService
 import com.autospare.service.LogService
@@ -35,13 +36,13 @@ class LoginViewModel @Inject constructor(
     val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    fun onSignInClick(user: GoogleUser?, openAndPopUp: (String, String) -> Unit) {
+    fun onSignInClick(user: User?, openAndPopUp: (String, String) -> Unit) {
         Log.i("Tag", "user: ${user.toString()}")
         viewModelScope.launch {
             if (user == null) {
                 return@launch
             }
-            val name = user.fullName
+            val name = user.name
             if (name.isNullOrEmpty()) {
                 SnackbarManager.showMessage(SnackbarMessage.StringSnackbar("Username not found"))
                 return@launch
